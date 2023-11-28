@@ -1,0 +1,45 @@
+name: release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version'
+        default: 'latest'
+        required: false
+  schedule:
+    - cron: "0 4 * * *"
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - id: runner
+        uses: pozetroninc/github-action-get-latest-release@master
+        with:
+          owner: actions
+          repo: runner
+          excludes: prerelease, draft
+
+      - uses: mukunku/tag-exists-action@v1.4.0
+        id: checkTag
+        with:
+          tag: ${{ github.event.inputs.version || steps.runner.outputs.release }}
+
+      - name: Create Release
+        if: ${{ ! steps.checkTag.outputs.exists }}
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: ${{ github.event.inputs.version || steps.runner.outputs.release }}
+          release_name: Release ${{ github.event.inputs.version || steps.runner.outputs.release }}
+          body: |
+            Version ${{ github.event.inputs.version || steps.runner.outputs.release }}
+          draft: false
+          prerelease: false
