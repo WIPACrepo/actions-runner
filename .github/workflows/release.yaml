@@ -26,13 +26,17 @@ jobs:
           repo: runner
           excludes: prerelease, draft
 
+      - name: Upstream Release
+        run: |
+          echo "Latest release = actions/runner: ${{ steps.runner.outputs.release }}"
+
       - uses: mukunku/tag-exists-action@v1.4.0
         id: checkTag
         with:
           tag: ${{ github.event.inputs.version || steps.runner.outputs.release }}
 
       - name: Create Release
-        if: ${{ ! steps.checkTag.outputs.exists }}
+        if: ${{ steps.checkTag.outputs.exists == 'false' }}
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
