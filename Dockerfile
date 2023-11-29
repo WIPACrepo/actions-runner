@@ -30,7 +30,7 @@ RUN curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.d
 # Install Docker compose
 RUN curl -fLo /usr/local/lib/docker/cli-plugins/docker-compose \
         https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-linux-x86_64 \
-    && chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
+    && chmod +x /usr/local/lib/docker/cli-plugins/docker-compose \
     && echo "export PATH=$PATH:/usr/local/lib/docker/cli-plugins" > /etc/profile.d/99-docker-plugins.sh
 
 
