@@ -44,8 +44,10 @@ jobs:
         if: ${{ startsWith( github.ref_name , 'v') }}
         id: tag
         run: |
-          export TAG="${{ github.ref_name }}"
-          echo "tag=${TAG:1}" >> "$GITHUB_OUTPUT"
+          TAG="${{ github.ref_name }}"
+          TAG2=${TAG:1}
+          echo "tag=$TAG2"
+          echo "tag=$TAG2" >> "$GITHUB_OUTPUT"
 
       - name: Build and push (Tag)
         if: ${{ startsWith( github.ref_name , 'v') }}
