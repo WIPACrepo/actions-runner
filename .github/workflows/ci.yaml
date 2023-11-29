@@ -40,8 +40,15 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Tag version
+        if: ${{ startsWith( github.ref_name , 'v') }}
+        id: tag
+        run: |
+          export TAG="${{ github.ref_name }}"
+          echo "tag=${TAG:1}" >> "$GITHUB_OUTPUT"
+
       - name: Build and push (Tag)
-        if: ${{ contains( github.ref_name , 'v') }}
+        if: ${{ startsWith( github.ref_name , 'v') }}
         uses: docker/build-push-action@v5
         with:
           context: .
@@ -49,10 +56,10 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
-            VERSION=${{ github.event.inputs.version || github.ref_name }}
+            VERSION=${{ steps.tag.outpus.tag }}
 
       - name: Build and push
-        if: ${{ ! contains( github.ref_name , 'v') }}
+        if: ${{ ! startsWith( github.ref_name , 'v') }}
         uses: docker/build-push-action@v5
         with:
           context: .
