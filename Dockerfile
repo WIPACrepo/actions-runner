@@ -1,5 +1,5 @@
 ARG VERSION=latest
-ARG DOCKER_CONFIG_VERSION=v2.23.3
+ARG COMPOSE_VERSION=v2.23.3
 
 FROM ghcr.io/actions/actions-runner:$VERSION
 
@@ -27,9 +27,8 @@ RUN curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.d
     apt-get install -y --no-install-recommends git-lfs
 
 # Install Docker compose
-RUN mkdir -p /usr/local/lib/docker/cli-plugins \
-    && curl -fLo /usr/local/lib/docker/cli-plugins/docker-compose \
-        "https://github.com/docker/compose/releases/download/${DOCKER_CONFIG_VERSION}/docker-compose-linux-x86_64" \
+RUN curl -fLo /usr/local/lib/docker/cli-plugins/docker-compose \
+        https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-linux-x86_64 \
     && chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
 
 # Set up tool cache
