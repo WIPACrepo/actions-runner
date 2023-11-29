@@ -11,7 +11,7 @@ on:
     - cron: "0 4 * * *"
 
 jobs:
-  docker:
+  release:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -26,24 +26,28 @@ jobs:
           repo: runner
           excludes: prerelease, draft
 
-      - name: Upstream Release
+      - name: Tag name
+        id: tag
         run: |
-          echo "Latest release = actions/runner: ${{ steps.runner.outputs.release }}"
+          echo "Upstream release = actions/runner: ${{ steps.runner.outputs.release }}"
+          if [ "${{ github.event.inputs.version }}" = "latest" ]; then
+            export TAG="${{ steps.runner.outputs.release }}"
+          else
+            export TAG="${{ github.event.inputs.version }}"
+          fi
+          echo "Generating tag: $TAG"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
 
       - uses: mukunku/tag-exists-action@v1.4.0
         id: checkTag
         with:
-          tag: ${{ github.event.inputs.version || steps.runner.outputs.release }}
+          tag: ${{ steps.tag.outputs.tag }}
 
       - name: Create Release
         if: ${{ steps.checkTag.outputs.exists == 'false' }}
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        uses: "marvinpinto/action-automatic-releases@latest"
         with:
-          tag_name: ${{ github.event.inputs.version || steps.runner.outputs.release }}
-          release_name: Release ${{ github.event.inputs.version || steps.runner.outputs.release }}
-          body: |
-            Version ${{ github.event.inputs.version || steps.runner.outputs.release }}
-          draft: false
+          repo_token: "${{ secrets.PERSONAL_ACCESS_TOKEN }}"
+          automatic_release_tag: "${{ steps.tag.outputs.tag }}"
           prerelease: false
+          title: "Release ${{ steps.tag.outputs.tag }}"
