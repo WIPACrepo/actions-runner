@@ -25,7 +25,7 @@ jobs:
         id: tag
         run: |
           echo "Upstream release = actions/runner: ${{ steps.runner.outputs.release }}"
-          if [ "${{ github.event.inputs.version }}" = "latest" ]; then
+          if [ "${{ github.event.inputs.version || 'latest' }}" = "latest" ]; then
             export TAG="${{ steps.runner.outputs.release }}"
           else
             export TAG="${{ github.event.inputs.version }}"
