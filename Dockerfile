@@ -1,7 +1,8 @@
 ARG VERSION=latest
-ARG COMPOSE_VERSION=v2.23.3
 
 FROM ghcr.io/actions/actions-runner:$VERSION
+
+ARG COMPOSE_VERSION=v2.23.3
 
 USER root
 
