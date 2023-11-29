@@ -39,7 +39,7 @@ jobs:
           tag: ${{ steps.tag.outputs.tag }}
 
       - name: Create Release
-        if: ${{ steps.checkTag.outputs.exists == 'false' }}
+        if: ${{ steps.checkTag.outputs.exists == 'false' || ( github.event.inputs.version && github.event.inputs.version != "latest" ) }}
         uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.PERSONAL_ACCESS_TOKEN }}"

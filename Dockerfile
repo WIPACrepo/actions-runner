@@ -17,6 +17,8 @@ RUN apt-get update -y \
     sudo \
     unzip \
     zip \
+    build-essential \
+    cmake \
     && rm -rf /var/lib/apt/lists/*
 
 # Download latest git-lfs version
