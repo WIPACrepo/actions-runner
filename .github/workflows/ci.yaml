@@ -58,7 +58,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
-            VERSION=${{ steps.tag.outpus.tag }}
+            VERSION=${{ steps.tag.output.tag }}
 
       - name: Build and push
         if: ${{ ! startsWith( github.ref_name , 'v') }}
