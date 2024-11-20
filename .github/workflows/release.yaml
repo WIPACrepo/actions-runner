@@ -33,7 +33,7 @@ jobs:
           echo "Generating tag: $TAG"
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
 
-      - uses: mukunku/tag-exists-action@v1.4.0
+      - uses: mukunku/tag-exists-action@v1.6.0
         id: checkTag
         with:
           tag: ${{ steps.tag.outputs.tag }}
